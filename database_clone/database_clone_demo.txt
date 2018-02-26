@@ -1,0 +1,21 @@
+- 3-5 min to load using reposcan
+- .5s to dump
+-  2s to restore
+# dump
+time sudo docker exec vmaas_database pg_dump vmaas -U vmaas_user -f /pgres_dump_file
+# get container-port
+sudo docker ps
+# copy
+sudo docker cp <VMAAS_DATABASE>:/pgres_dump_file database_clone/pgres_dump_file.sql
+# build new img
+sudo docker-compose -f db-export-compose.yaml build
+# clear
+sudo docker-compose down
+# bring up db and webapp
+sudo docker-compose -f db-export-compose.yaml up
+# test
+time curl -X POST -d @/home/ggainey/github/ggainey-vmaas/sample_data/kernel.json -H "Content-Type: application/json" http://localhost:8080/api/v1/json | python -m json.tool
+
+sudo docker exec -it vmaas_database_clone bash
+
+

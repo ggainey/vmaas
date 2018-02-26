@@ -1,0 +1,25 @@
+version: '2'
+services:
+  database_clone:
+    container_name: vmaas_database_clone
+    build: ./database_clone
+    image: vmaas_database_clone_img
+    restart: unless-stopped
+    env_file:
+      - ./db-export-compose.env
+    ports:
+      - 5432:5432
+
+  webapp:
+    container_name: vmaas_webapp
+    build: ./webapp
+    image: vmaas_webapp_img
+    restart: unless-stopped
+    env_file:
+      - ./db-export-compose.env
+    ports:
+      - 8080:8080
+    depends_on:
+      - database_clone
+    links:
+      - database_clone
